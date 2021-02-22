@@ -69,18 +69,17 @@ class RationalNumberClass {
 
         //--------------------------------------------------------------------
 
-
-        double operator * (const int &number) {
-            double u_nominator = nominator, u_denominator = denominator;
-            cout <<"Перегруженный оператор умножения с целым числом"<<endl;
-            return (u_nominator * number / denominator);
-        }
         double operator * (const RationalNumberClass &rc) {
             double u_nominator = nominator, u_denominator = denominator;
             u_nominator *= rc.nominator;
             u_denominator *= rc.denominator;
             cout <<"Перегруженный оператор умножения с другим рациональным числом"<<endl;
             return ((double)(u_nominator / u_denominator));
+        }
+        double operator * (const int &number) {
+            double u_nominator = nominator, u_denominator = denominator;
+            cout <<"Перегруженный оператор умножения с целым числом"<<endl;
+            return (u_nominator * number / denominator);
         }
         operator float() {
             cout <<"Перегруженный оператор приведения типа к float"<<endl;
@@ -111,11 +110,11 @@ int main() {
     int u_nominator, u_denominator;
     setlocale( LC_ALL,"Russian" );
     cout <<"NOTE!!! Не вводите символы, не являющиеся цифрами."<< endl;
-    RationalNumberClass RationalNumber1;
+    RationalNumberClass *RationalNumber1 = new RationalNumberClass;
     cout <<"Создан объект с помощью конструктора по умолчанию\n\n\n"<< endl;
-    RationalNumberClass RationalNumber2(16, 8);
+    RationalNumberClass *RationalNumber2 = new RationalNumberClass(16, 8);
     cout <<"Создан объект с помощью конструктора с параметрами (16, 8)\n\n\n"<< endl;
-    RationalNumberClass RationalNumber3(RationalNumber2);
+    RationalNumberClass *RationalNumber3 = RationalNumber1;
     cout <<"Создан объект с помощью конструктора копирования (скопирован предыдущий объект)\n\n\n"<< endl;
     do {
         cout
@@ -128,7 +127,7 @@ int main() {
         << "7 - Сравнить РЧ2 и целое число (2)\n"
         << "8 - сравнить РЧ1 и РЧ3\n"
         << "9 - сравнить РЧ1 и целое число (2)\n"
-        << "10 - принудительно вызвать деструктор РЧ3\n"
+        << "10 - уничтожить РЧ3\n"
         << "0 - покинуть программу\n\n\n"
         <<"NOTE!!! Не вводите символы, не являющиеся цифрами."
         << endl;
@@ -136,51 +135,50 @@ int main() {
         system("CLS");
         switch (menuPos){
             case 0 : {
-                cout << "пачимэ......................" << endl;
                 exit(0);
             }
             case 1 : {
-                cout << RationalNumber1.getNominator() << endl;
+                cout << RationalNumber1->getNominator() << endl;
                 break;
             }
             case 2 : {
-                cout << RationalNumber1.getDenominator() << endl;
+                cout << RationalNumber1->getDenominator() << endl;
                 break;
             }
             case 3 : {
-                cout << (float)(RationalNumber1 * RationalNumber2) << endl;
+                cout << (float)(*RationalNumber1 * *RationalNumber2) << endl;
                 break;
             }
             case 4 : {
-                cout << (RationalNumber1 * 9) << endl;
+                cout << (*RationalNumber1 * 9) << endl;
                 break;
             }
             case 5 : {
-                cout << (float)RationalNumber1 << endl;
+                cout << (float)*RationalNumber1 << endl;
                 break;
             }
             case 6 : {
-                if (RationalNumber2 == RationalNumber3) { cout <<"Они равны"<< endl; }
+                if (*RationalNumber2 == *RationalNumber3) { cout <<"Они равны"<< endl; }
                 else {cout <<"Они не равны"<< endl;}
                 break;
             }
             case 7 : {
-                if (RationalNumber2 == 2) { cout <<"Они равны"<< endl; }
+                if (*RationalNumber2 == 2) { cout <<"Они равны"<< endl; }
                 else {cout <<"Они не равны"<< endl;}
                 break;
             }
             case 8 : {
-                if (RationalNumber1 == RationalNumber3) { cout <<"Они равны"<< endl; }
+                if (*RationalNumber1 == *RationalNumber3) { cout <<"Они равны"<< endl; }
                 else {cout <<"Они не равны"<< endl;}
                 break;
             }
             case 9 : {
-                if (RationalNumber1 == 2) { cout <<"Они равны"<< endl; }
+                if (*RationalNumber1 == 2) { cout <<"Они равны"<< endl; }
                 else {cout <<"Они не равны"<< endl;}
                 break;
             }
             case 10 : {
-                RationalNumber3.~RationalNumberClass();
+                delete RationalNumber3;
                 break;
             }
             default : {
