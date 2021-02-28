@@ -28,70 +28,51 @@ class RationalNumberClass {
 
         RationalNumberClass() {
             cout <<"Конструктор по умолчанию (используя ввод с клавиатуры)"<<endl;
-            inputRationalNumber();
         };
-        RationalNumberClass(double u_nominator, double u_denominator) {
+        RationalNumberClass(const double &u_nominator, const double &u_denominator) : nominator(u_nominator), denominator(u_denominator) {
             cout <<"Конструктор с параметрами"<< endl;
-            setRationalNumber(u_nominator, u_denominator);
         };
-        RationalNumberClass(RationalNumberClass &rc) {
+        RationalNumberClass(const RationalNumberClass &rc) : nominator(rc.nominator), denominator(rc.denominator) {
             cout <<"Конструктор копирования"<< endl;
-            nominator = rc.nominator;
-            denominator = rc.denominator;
+
         }
 
         //--------------------------------------------------------------------
 
-
-        void setRationalNumber(double u_nominator, double u_denominator) {
-            nominator = u_nominator;
-            denominator = u_denominator;
-            cout <<"Установлены значения числителя и знаменталя"<< endl;
-        };
-        void inputRationalNumber() {
-            cout <<"Метод ввода с клавиатуры"<< endl;
-            int u_nominator, u_denominator;
-            cout <<"Введите числитель"<< endl;
-            cin >> u_nominator;
-            cout <<"Введите знаменатель"<< endl;
-            cin >> u_denominator;
-            setRationalNumber(u_nominator, u_denominator);
-        }
         double getNominator() {
-            cout <<"Получен числитель"<< endl;
             return nominator;
         }
         double getDenominator() {
-            cout <<"Получен знаменатель"<< endl;
             return denominator;
         }
 
-
+        //--------------------------------------------------------------------
+        friend ostream& operator<< (ostream &out, const RationalNumberClass &rc);
+        friend istream& operator>> (istream &in, RationalNumberClass &rc);
         //--------------------------------------------------------------------
 
-        double operator * (const RationalNumberClass &rc) {
-            double u_nominator = nominator, u_denominator = denominator;
-            u_nominator *= rc.nominator;
-            u_denominator *= rc.denominator;
+        RationalNumberClass operator * (const RationalNumberClass &rc) {
+            nominator *= rc.nominator;
+            denominator *= rc.denominator;
             cout <<"Перегруженный оператор умножения с другим рациональным числом"<<endl;
-            return ((double)(u_nominator / u_denominator));
+            return *this;
         }
-        double operator * (const int &number) {
-            double u_nominator = nominator, u_denominator = denominator;
+        RationalNumberClass operator * (const int &number) {
+            nominator *= number;
             cout <<"Перегруженный оператор умножения с целым числом"<<endl;
-            return (u_nominator * number / denominator);
+            return *this;
         }
         operator float() {
             cout <<"Перегруженный оператор приведения типа к float"<<endl;
             return ((float)(nominator/denominator));
         }
-        bool operator== (const double number) {
+        operator== (const double &number) {
             cout <<"Перегруженный оператор сравнения с целым числом"<<endl;
             return ( (float)(nominator/denominator) == number );
         }
         bool operator== (const RationalNumberClass &rc) {
             cout <<"Перегруженный оператор сравнения с другим рациональным числом"<<endl;
-            return ( nominator == rc.nominator && denominator == rc.denominator );
+            return ( nominator / denominator == rc.nominator / rc.denominator );
         }
 
 
@@ -104,30 +85,45 @@ class RationalNumberClass {
 
 };
 
+ostream& operator<< (ostream &out, const RationalNumberClass &rc) {
+    out <<"Числитель: " << rc.nominator << "\n" << "Знаменатель: " << rc.denominator  << endl;
+    return out;
+}
+
+istream& operator>>(std::istream &in, RationalNumberClass &rc) {
+    cout <<"Введите числитель: " << endl;
+    in >> rc.nominator;
+    cout <<"Введите знаменатель: " << endl;
+    in >> rc.denominator;
+    return in;
+}
+
 int main() {
     int menuPos = 0;
     int flag = 0;
     int u_nominator, u_denominator;
     setlocale( LC_ALL,"Russian" );
-    cout <<"NOTE!!! Не вводите символы, не являющиеся цифрами."<< endl;
     RationalNumberClass *RationalNumber1 = new RationalNumberClass;
+    cout <<"NOTE!!! Не вводите символы, не являющиеся цифрами."<< endl;
+    cin >> *RationalNumber1;
     cout <<"Создан объект с помощью конструктора по умолчанию\n\n\n"<< endl;
     RationalNumberClass *RationalNumber2 = new RationalNumberClass(16, 8);
     cout <<"Создан объект с помощью конструктора с параметрами (16, 8)\n\n\n"<< endl;
-    RationalNumberClass *RationalNumber3 = RationalNumber1;
+    RationalNumberClass *RationalNumber3 = new RationalNumberClass(*RationalNumber1);
     cout <<"Создан объект с помощью конструктора копирования (скопирован предыдущий объект)\n\n\n"<< endl;
     do {
         cout
         << "1 - вывести числитель РЧ1\n"
         << "2 - вывести знаменатель РЧ1\n"
-        << "3 - умножить РЧ1 на РЧ2 и привести к float\n"
-        << "4 - умножить РЧ1 на целое число (9) и привести к float\n"
+        << "3 - умножить РЧ1 на РЧ2\n"
+        << "4 - умножить РЧ1 на целое число (9)\n"
         << "5 - привести РЧ1 к float\n"
         << "6 - Сравнить РЧ2 и РЧ3\n"
         << "7 - Сравнить РЧ2 и целое число (2)\n"
         << "8 - сравнить РЧ1 и РЧ3\n"
         << "9 - сравнить РЧ1 и целое число (2)\n"
         << "10 - уничтожить РЧ3\n"
+        << "11 - вывести информацию о РЧ1\n"
         << "0 - покинуть программу\n\n\n"
         <<"NOTE!!! Не вводите символы, не являющиеся цифрами."
         << endl;
@@ -138,15 +134,15 @@ int main() {
                 exit(0);
             }
             case 1 : {
-                cout << RationalNumber1->getNominator() << endl;
+                cout << "Числитель: " << RationalNumber1->getNominator() << endl;
                 break;
             }
             case 2 : {
-                cout << RationalNumber1->getDenominator() << endl;
+                cout << "Знаменатель: " << RationalNumber1->getDenominator() << endl;
                 break;
             }
             case 3 : {
-                cout << (float)(*RationalNumber1 * *RationalNumber2) << endl;
+                cout << (*RationalNumber1 * *RationalNumber2) << endl;
                 break;
             }
             case 4 : {
@@ -179,6 +175,10 @@ int main() {
             }
             case 10 : {
                 delete RationalNumber3;
+                break;
+            }
+            case 11 : {
+                cout << *RationalNumber1 << endl;
                 break;
             }
             default : {
