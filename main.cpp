@@ -1,7 +1,7 @@
 #include <iostream>
 #include <locale>
 #include <cctype>
-
+#include <cstdlib>
 using namespace std;
 /*
 Описать  класс  в  соответствии  с  индивидуальным  вариантом  задания  и  реализовать  все  его методы.
@@ -17,7 +17,12 @@ using namespace std;
     операций  умножения  «*»  двух  РЧ  и  РЧ  с  целым  числом,
     сравнения на равенство «==» двух РЧ и РЧ с целым числом.
 */
-class RationalNumberClass {
+void cleaning() {
+    cin.clear(); // сбрасывает все биты потока, тоесть поток становится "хорошим"
+    cin.sync();//Удалим данные из буффера
+}
+
+ class RationalNumberClass {
     private:
         double nominator, denominator;
     public:
@@ -27,7 +32,7 @@ class RationalNumberClass {
 
 
         RationalNumberClass() {
-            cout <<"Конструктор по умолчанию (используя ввод с клавиатуры)"<<endl;
+            cout <<"Конструктор по умолчанию"<<endl;
         };
         RationalNumberClass(const double &u_nominator, const double &u_denominator) : nominator(u_nominator), denominator(u_denominator) {
             cout <<"Конструктор с параметрами"<< endl;
@@ -44,6 +49,14 @@ class RationalNumberClass {
         }
         double getDenominator() {
             return denominator;
+        }
+        void setNominator(int value) {
+            nominator = value;
+            cout << "Установлено новое значение" << endl;
+        }
+        void setDenominator(int value) {
+            denominator = value;
+            cout << "Установлено новое значение" << endl;
         }
 
         //--------------------------------------------------------------------
@@ -66,7 +79,7 @@ class RationalNumberClass {
             cout <<"Перегруженный оператор приведения типа к float"<<endl;
             return ((float)(nominator/denominator));
         }
-        operator== (const double &number) {
+        bool operator== (const int &number) {
             cout <<"Перегруженный оператор сравнения с целым числом"<<endl;
             return ( (float)(nominator/denominator) == number );
         }
@@ -91,10 +104,19 @@ ostream& operator<< (ostream &out, const RationalNumberClass &rc) {
 }
 
 istream& operator>>(std::istream &in, RationalNumberClass &rc) {
-    cout <<"Введите числитель: " << endl;
-    in >> rc.nominator;
-    cout <<"Введите знаменатель: " << endl;
-    in >> rc.denominator;
+    int i = 0;
+    cout <<"Введите числитель: ";
+    while (!(in >> rc.nominator) || in.get() != '\n') {
+        cout << "Разрешены только цифры!" << endl;
+        cleaning();
+        cout <<"Введите числитель: ";
+    }
+    cout <<"Введите знаменатель: ";
+    while (!(in >> rc.denominator) || in.get() != '\n') {
+        cout << "Разрешены только цифры!" << endl;
+        cleaning();
+        cout <<"Введите знаменатель: ";
+    }
     return in;
 }
 
@@ -102,32 +124,40 @@ int main() {
     int menuPos = 0;
     int flag = 0;
     int u_nominator, u_denominator;
+    system("color F0");
     setlocale( LC_ALL,"Russian" );
     RationalNumberClass *RationalNumber1 = new RationalNumberClass;
     cout <<"NOTE!!! Не вводите символы, не являющиеся цифрами."<< endl;
     cin >> *RationalNumber1;
-    cout <<"Создан объект с помощью конструктора по умолчанию\n\n\n"<< endl;
+    cout <<"Создан объект с помощью конструктора по умолчанию\n\n"<< endl;
     RationalNumberClass *RationalNumber2 = new RationalNumberClass(16, 8);
-    cout <<"Создан объект с помощью конструктора с параметрами (16, 8)\n\n\n"<< endl;
+    cout <<"Создан объект с помощью конструктора с параметрами (16, 8)\n\n"<< endl;
     RationalNumberClass *RationalNumber3 = new RationalNumberClass(*RationalNumber1);
-    cout <<"Создан объект с помощью конструктора копирования (скопирован предыдущий объект)\n\n\n"<< endl;
+    cout <<"Создан объект с помощью конструктора копирования (скопирован предыдущий объект)\n\n"<< endl;
     do {
         cout
         << "1 - вывести числитель РЧ1\n"
         << "2 - вывести знаменатель РЧ1\n"
-        << "3 - умножить РЧ1 на РЧ2\n"
-        << "4 - умножить РЧ1 на целое число (9)\n"
-        << "5 - привести РЧ1 к float\n"
-        << "6 - Сравнить РЧ2 и РЧ3\n"
-        << "7 - Сравнить РЧ2 и целое число (2)\n"
-        << "8 - сравнить РЧ1 и РЧ3\n"
-        << "9 - сравнить РЧ1 и целое число (2)\n"
-        << "10 - уничтожить РЧ3\n"
-        << "11 - вывести информацию о РЧ1\n"
+        << "3 - установить новое значение числителя для РЧ1\n"
+        << "4 - установить новое значение знаменателя для РЧ1\n"
+        << "5 - умножить РЧ1 на РЧ2\n"
+        << "6 - умножить РЧ1 на целое число (9)\n"
+        << "7 - привести РЧ1 к float\n"
+        << "8 - Сравнить РЧ2 и РЧ3\n"
+        << "9 - Сравнить РЧ2 и целое число (2)\n"
+        << "10 - сравнить РЧ1 и РЧ3\n"
+        << "11 - сравнить РЧ1 и целое число (2)\n"
+        << "12 - уничтожить РЧ3\n"
+        << "13 - вывести информацию об имеющихся РЧ\n"
         << "0 - покинуть программу\n\n\n"
         <<"NOTE!!! Не вводите символы, не являющиеся цифрами."
         << endl;
-        cin >> menuPos;
+        cout <<"Введите пункт меню: ";
+        while (!(cin >> menuPos) || cin.get() != '\n') {
+            cout << "Разрешены только цифры!" << endl;
+            cleaning();
+            cout <<"Введите пункт меню: ";
+        }
         system("CLS");
         switch (menuPos){
             case 0 : {
@@ -142,47 +172,78 @@ int main() {
                 break;
             }
             case 3 : {
-                cout << (*RationalNumber1 * *RationalNumber2) << endl;
+                int number;
+                cout <<"Введите значение, которые вы хотите установить: ";
+                while (!(cin >> number) || cin.get() != '\n') {
+                    cout << "Разрешены только цифры!" << endl;
+                    cleaning();
+                    cout <<"Введите пункт меню: ";
+                }
+                RationalNumber1->setNominator(number);
                 break;
             }
             case 4 : {
-                cout << (*RationalNumber1 * 9) << endl;
+                int number;
+                cout <<"Введите значение, которые вы хотите установить: ";
+                while (!(cin >> number) || cin.get() != '\n') {
+                    cout << "Разрешены только цифры!" << endl;
+                    cleaning();
+                    cout <<"Введите пункт меню: ";
+                }
+                RationalNumber1->setDenominator(number);
                 break;
             }
             case 5 : {
-                cout << (float)*RationalNumber1 << endl;
+                cout << (*RationalNumber1 * *RationalNumber2) << endl;
                 break;
             }
             case 6 : {
+                cout << (*RationalNumber1 * 9) << endl;
+                break;
+            }
+            case 7 : {
+                cout << (float)*RationalNumber1 << endl;
+                break;
+            }
+            case 8 : {
                 if (*RationalNumber2 == *RationalNumber3) { cout <<"Они равны"<< endl; }
                 else {cout <<"Они не равны"<< endl;}
                 break;
             }
-            case 7 : {
+            case 9 : {
                 if (*RationalNumber2 == 2) { cout <<"Они равны"<< endl; }
                 else {cout <<"Они не равны"<< endl;}
                 break;
             }
-            case 8 : {
+            case 10 : {
                 if (*RationalNumber1 == *RationalNumber3) { cout <<"Они равны"<< endl; }
                 else {cout <<"Они не равны"<< endl;}
                 break;
             }
-            case 9 : {
+            case 11 : {
                 if (*RationalNumber1 == 2) { cout <<"Они равны"<< endl; }
                 else {cout <<"Они не равны"<< endl;}
                 break;
             }
-            case 10 : {
+            case 12 : {
                 delete RationalNumber3;
+                RationalNumber3 = 0;
                 break;
             }
-            case 11 : {
-                cout << *RationalNumber1 << endl;
+            case 13 : {
+                if (RationalNumber1 != NULL) {
+                    cout << "РЧ1: " << *RationalNumber1 << endl;
+                }
+                if (RationalNumber2 != NULL) {
+                    cout << "РЧ2: " << *RationalNumber2 << endl;
+                }
+                if (RationalNumber3 != NULL) {
+                    cout << "РЧ3: " << *RationalNumber3 << endl;
+                }
                 break;
             }
             default : {
-                cout << "Вы ввели неправильную команду, попробуйте снова." << endl;
+                cout << "Вы выбрали несуществующую команду, попробуйте снова." << endl;
                 break;
             }
         }
@@ -191,3 +252,5 @@ int main() {
 
     return 0;
 }
+
+
