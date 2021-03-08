@@ -1,7 +1,5 @@
 #include <iostream>
 #include <locale>
-#include <cctype>
-#include <cstdlib>
 using namespace std;
 /*
 Описать  класс  в  соответствии  с  индивидуальным  вариантом  задания  и  реализовать  все  его методы.
@@ -32,6 +30,8 @@ void cleaning() {
 
 
         RationalNumberClass() {
+            nominator = 1;
+            denominator = 1;
             cout <<"Конструктор по умолчанию"<<endl;
         };
         RationalNumberClass(const double &u_nominator, const double &u_denominator) : nominator(u_nominator), denominator(u_denominator) {
@@ -65,27 +65,24 @@ void cleaning() {
         //--------------------------------------------------------------------
 
         RationalNumberClass operator * (const RationalNumberClass &rc) {
-            nominator *= rc.nominator;
-            denominator *= rc.denominator;
             cout <<"Перегруженный оператор умножения с другим рациональным числом"<<endl;
-            return *this;
+            return RationalNumberClass(nominator * rc.nominator, denominator * rc.denominator);
         }
         RationalNumberClass operator * (const int &number) {
-            nominator *= number;
             cout <<"Перегруженный оператор умножения с целым числом"<<endl;
-            return *this;
+            return RationalNumberClass(nominator * number, denominator);
         }
         operator float() {
             cout <<"Перегруженный оператор приведения типа к float"<<endl;
-            return ((float)(nominator/denominator));
+            return (float)(nominator/denominator);
         }
         bool operator== (const int &number) {
             cout <<"Перегруженный оператор сравнения с целым числом"<<endl;
-            return ( (float)(nominator/denominator) == number );
+            return (float)(nominator/denominator) == number ;
         }
         bool operator== (const RationalNumberClass &rc) {
             cout <<"Перегруженный оператор сравнения с другим рациональным числом"<<endl;
-            return ( nominator / denominator == rc.nominator / rc.denominator );
+            return nominator / denominator == rc.nominator / rc.denominator;
         }
 
 
@@ -104,7 +101,6 @@ ostream& operator<< (ostream &out, const RationalNumberClass &rc) {
 }
 
 istream& operator>>(std::istream &in, RationalNumberClass &rc) {
-    int i = 0;
     cout <<"Введите числитель: ";
     while (!(in >> rc.nominator) || in.get() != '\n') {
         cout << "Разрешены только цифры!" << endl;
@@ -123,9 +119,9 @@ istream& operator>>(std::istream &in, RationalNumberClass &rc) {
 int main() {
     int menuPos = 0;
     int flag = 0;
-    int u_nominator, u_denominator;
     system("color F0");
     setlocale( LC_ALL,"Russian" );
+    RationalNumberClass *RationalNumber4 = new RationalNumberClass;
     RationalNumberClass *RationalNumber1 = new RationalNumberClass;
     cout <<"NOTE!!! Не вводите символы, не являющиеся цифрами."<< endl;
     cin >> *RationalNumber1;
@@ -140,8 +136,8 @@ int main() {
         << "2 - вывести знаменатель РЧ1\n"
         << "3 - установить новое значение числителя для РЧ1\n"
         << "4 - установить новое значение знаменателя для РЧ1\n"
-        << "5 - умножить РЧ1 на РЧ2\n"
-        << "6 - умножить РЧ1 на целое число (9)\n"
+        << "5 - умножить РЧ1 на РЧ2 и вывести результат\n"
+        << "6 - умножить РЧ1 на целое число и вывести результат (9)\n"
         << "7 - привести РЧ1 к float\n"
         << "8 - Сравнить РЧ2 и РЧ3\n"
         << "9 - Сравнить РЧ2 и целое число (2)\n"
@@ -194,11 +190,13 @@ int main() {
                 break;
             }
             case 5 : {
-                cout << (*RationalNumber1 * *RationalNumber2) << endl;
+                *RationalNumber4 = *RationalNumber1 * *RationalNumber2;
+                cout << *RationalNumber4 << endl;
                 break;
             }
             case 6 : {
-                cout << (*RationalNumber1 * 9) << endl;
+                *RationalNumber4 = *RationalNumber1 * 9;
+                cout << *RationalNumber4 << endl;
                 break;
             }
             case 7 : {
@@ -239,6 +237,9 @@ int main() {
                 }
                 if (RationalNumber3 != NULL) {
                     cout << "РЧ3: " << *RationalNumber3 << endl;
+                }
+                if (RationalNumber4 != NULL) {
+                    cout << "РЧ4: " << *RationalNumber4 << endl;
                 }
                 break;
             }
